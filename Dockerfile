@@ -12,10 +12,11 @@ RUN pacman -S --noconfirm neovim python-{neovim,pytest} \
 RUN pacman -S --noconfirm rustup \
     && paccache -r -k0 \
     && rustup default nightly
+    && rustup component add rls
+    && rustup component add rust-analysis
+    && rustup component add rust-src
 
-RUN git clone --branch alpha-2 --depth 1 https://github.com/rust-lang-nursery/rls /opt/rls && cargo build --release --manifest-path=/opt/rls/Cargo.toml
-
-RUN timeout 5 cargo run --release --manifest-path=/opt/rls/Cargo.toml
+RUN timeout 3 rustup run nightly rls
 
 RUN git clone --depth 1 https://github.com/junegunn/fzf.git /root/.fzf && /root/.fzf/install --bin
 
